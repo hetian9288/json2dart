@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"github.com/sirupsen/logrus"
+	"encoding/json"
 )
 
 type Convert struct {
@@ -60,6 +61,13 @@ func (this *Convert) fieldConvert(name string, value interface{}) fields.Fields 
 	case valueType == "bool":
 		return fields.NewFields(name, "bool", false)
 
+	case valueType == "json.Number":
+		if strings.Contains(value.(json.Number).String(), ".") {
+			return fields.NewFields(name, "double", false)
+		}else{
+			return fields.NewFields(name, "int", false)
+		}
+
 	case strings.HasPrefix(valueType, "int"):
 		return fields.NewFields(name, "int", false)
 
@@ -91,9 +99,9 @@ func (this *Convert) GetFileName() string {
 		delimiter = "\\"
 	}
 	if strings.HasSuffix(this.Path, delimiter) {
-		return this.Path + fields.NameToFieldName(this.ModelName) + ".dart"
+		return this.Path + this.ModelName + ".dart"
 	}
-	return this.Path + delimiter + fields.NameToFieldName(this.ModelName) + ".dart"
+	return this.Path + delimiter + this.ModelName + ".dart"
 }
 
 func (this *Convert) GetFilePartName() string {
@@ -102,9 +110,9 @@ func (this *Convert) GetFilePartName() string {
 		delimiter = "\\"
 	}
 	if strings.HasSuffix(this.Path, delimiter) {
-		return this.Path + fields.NameToFieldName(this.ModelName) + ".g.dart"
+		return this.Path + this.ModelName + ".g.dart"
 	}
-	return this.Path + delimiter + fields.NameToFieldName(this.ModelName) + ".g.dart"
+	return this.Path + delimiter + this.ModelName + ".g.dart"
 }
 
 func (this *Convert) Write(path string, content string) {
@@ -138,7 +146,7 @@ class %s {
   factory %s.fromJson(Map<String, dynamic> json) => _$%sFromJson(json);
   Map<String, dynamic> toJson() => _$%sToJson(this);
 }
-`, this.getImports(), fields.NameToFieldName(this.ModelName), modelName, this.getFieldLines(), modelName, this.getFieldInitLines(), modelName, modelName, modelName)
+`, this.getImports(), this.ModelName, modelName, this.getFieldLines(), modelName, this.getFieldInitLines(), modelName, modelName, modelName)
 	this.Write(this.GetFileName(), fileContent)
 }
 
@@ -153,7 +161,7 @@ func (this *Convert) WriteModelPartContent() {
 
 Map<String, dynamic> _$%sToJson(%s instance) => <String, dynamic>{
       %s
-    };`, fields.NameToFieldName(this.ModelName), modelName, modelName, modelName, this.getFieldJsonToValStr(), modelName, modelName, this.getFieldToDataStr())
+    };`, this.ModelName, modelName, modelName, modelName, this.getFieldJsonToValStr(), modelName, modelName, this.getFieldToDataStr())
 	this.Write(this.GetFilePartName(), fileContent)
 }
 

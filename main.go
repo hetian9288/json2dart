@@ -10,10 +10,11 @@ import (
 	"github.com/hetian9288/json2dart/app/convert"
 	"os"
 	"fmt"
+	"bytes"
 )
 
 var (
-	ModelName   = flag.String("name", "Users", "-name=模块名 如Users")
+	ModelName   = flag.String("name", "users", "-name=模块名 如Users")
 	ApiUrl      = flag.String("api", "https://h5.cnganen.cn/test.json", "-api=你的API地址")
 	Path        = flag.String("page", "./dart", "-path=文件保存位置")
 	packagePath = flag.String("package", "./", "-package=引用包前缀")
@@ -50,8 +51,12 @@ func main() {
 		logrus.Error("读取接口失败, ", err)
 		return
 	}
-	var jsonMap map[string]interface{}
-	err = json.Unmarshal(bodyByte, &jsonMap)
+	var jsonMap interface{}
+	//err = json.Unmarshal(bodyByte, &jsonMap)
+	iJson := json.NewDecoder(bytes.NewBuffer(bodyByte))
+	iJson.UseNumber()
+	err = iJson.Decode(&jsonMap)
+
 	if err != nil {
 		logrus.Error("接口返回可能非正确的JSON格式, ", err)
 		return

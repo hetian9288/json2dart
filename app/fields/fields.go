@@ -56,13 +56,13 @@ func (this Fields) GetJsonToValStr() string {
 	case "double":
 		return fmt.Sprintf("json['%s'] as double", this.Name)
 	case "List<String>":
-		return fmt.Sprintf("json['%s'] as List<String>", this.Name)
+		return fmt.Sprintf("json['%s'].cast<String>()", this.Name)
 	case "List<bool>":
-		return fmt.Sprintf("json['%s'] as List<bool>", this.Name)
+		return fmt.Sprintf("json['%s'].cast<bool>()", this.Name)
 	case "List<int>":
-		return fmt.Sprintf("json['%s'] as List<int>", this.Name)
+		return fmt.Sprintf("json['%s'].cast<int>()", this.Name)
 	case "List<double>":
-		return fmt.Sprintf("json['%s'] as List<double>", this.Name)
+		return fmt.Sprintf("json['%s'].cast<double>()", this.Name)
 	case "DateTime":
 		return fmt.Sprintf("DateTime.parse(json['%s'] as String)", this.Name)
 	case "Null":
