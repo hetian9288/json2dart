@@ -76,8 +76,8 @@ func (this Fields) GetJsonToValStr() string {
         %s.add(new %s.fromJson(v));
       });
     }
-      return userlist;
-}()`, TypeToType(this.Name), this.Name, TypeToType(this.Name), this.Name, this.Name, this.Name, TypeToType(this.Name))
+      return %s;
+}()`, TypeToType(this.Name), this.Name, TypeToType(this.Name), this.Name, this.Name, this.Name, TypeToType(this.Name), this.Name)
 		}else if this.IsAuto{
 			return fmt.Sprintf(`json['%s'] != null ? new %s.fromJson(json['%s']) : null`, this.Name, TypeToType(this.Name), this.Name)
 		}

@@ -51,6 +51,7 @@ func (this *Convert) fieldConvert(name string, value interface{}) fields.Fields 
 		return fields.NewFields(name, "Null", false)
 	}
 	valueType := reflect.TypeOf(value).String()
+	fmt.Println()
 	switch {
 	case valueType == "string":
 		if fields.FieldIsDateTime(value.(string)) {
